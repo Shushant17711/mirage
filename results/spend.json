@@ -748,6 +748,174 @@
       "prompt_tokens": 2079,
       "completion_tokens": 182,
       "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1910f8eee3",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2094,
+      "completion_tokens": 209,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fa45a1a5186",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2123,
+      "completion_tokens": 177,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8d6c01b0af",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2086,
+      "completion_tokens": 55,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f0ee49defe4",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2094,
+      "completion_tokens": 218,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f96c505c549",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2120,
+      "completion_tokens": 184,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f519c4be308",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2137,
+      "completion_tokens": 178,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f972f775cc2",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2125,
+      "completion_tokens": 177,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1af4276723",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2125,
+      "completion_tokens": 167,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f2944668104",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2129,
+      "completion_tokens": 156,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd1521d2aae",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2102,
+      "completion_tokens": 165,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fbb62c0b259",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2100,
+      "completion_tokens": 167,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe513655e62",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2094,
+      "completion_tokens": 442,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f609bc9bc4d",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2092,
+      "completion_tokens": 403,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f10723b643b",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2098,
+      "completion_tokens": 175,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fb87b43aae4",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2094,
+      "completion_tokens": 438,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ff9061e12f0",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2148,
+      "completion_tokens": 387,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1aa40cf01c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2142,
+      "completion_tokens": 422,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1acc35ba03",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2139,
+      "completion_tokens": 325,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fcbe090e234",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2149,
+      "completion_tokens": 567,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f78b5563624",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2152,
+      "completion_tokens": 545,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd416c7802c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2152,
+      "completion_tokens": 520,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f32e135bb63",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2101,
+      "completion_tokens": 338,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc57b8aa34c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2101,
+      "completion_tokens": 730,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f4c93388bc9",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2101,
+      "completion_tokens": 477,
+      "cost_usd": 0.0
     }
   ],
   "total_cost_usd": 0.0

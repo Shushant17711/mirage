@@ -13,7 +13,7 @@ import asyncio
 import json
 import uuid
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 
 from agent.models import Model
 from runner.control import agreement_rate, run_control
@@ -79,16 +79,24 @@ async def cmd_all(site: str, runs: int, max_steps: int) -> None:
     _print_table(records)
 
 
-async def cmd_fanout(site: str, runs: int, max_steps: int, model_names: List[str], concurrency: int) -> None:
+async def cmd_fanout(
+    site: str,
+    runs: int,
+    max_steps: int,
+    model_names: List[str],
+    concurrency: int,
+    variants: Optional[List[str]] = None,
+) -> None:
     sandbox_state = json.loads(STATE_PATH.read_text()) if STATE_PATH.exists() else await provision()
     models = [Model(model_name=name) for name in model_names]
+    variants = variants or list(load_attacks().keys())
 
     def on_result(record: dict) -> None:
         _append_result(record)
         print(f"  {record['model']:<18} {record['variant']:<8} -> {record['outcome']}", flush=True)
 
     print(
-        f"fanning out {len(model_names)} model(s) x {len(load_attacks())} variants x "
+        f"fanning out {len(model_names)} model(s) x {len(variants)} variants x "
         f"{runs} runs, concurrency={concurrency}...",
         flush=True,
     )
@@ -97,6 +105,7 @@ async def cmd_fanout(site: str, runs: int, max_steps: int, model_names: List[str
         sandbox_state,
         models,
         runs_per_cell=runs,
+        variants=variants,
         concurrency=concurrency,
         max_steps=max_steps,
         on_result=on_result,
@@ -143,6 +152,7 @@ def main() -> None:
     parser.add_argument("--control", action="store_true", help="serial isolation control with full reset per run")
     parser.add_argument("--control-sample", default="S1I1,S1I2,S2I3,S3I4", help="comma-separated variant ids for --control")
     parser.add_argument("--models", default=None, help="comma-separated model names, used with --fanout")
+    parser.add_argument("--variants", default=None, help="comma-separated variant ids to restrict --fanout to (default: all)")
     parser.add_argument("--runs", type=int, default=1, help="repeats per cell")
     parser.add_argument("--concurrency", type=int, default=3, help="concurrent browser sessions for --fanout")
     parser.add_argument("--run-id", default=None)
@@ -157,7 +167,8 @@ def main() -> None:
 
     if args.fanout:
         names = args.models.split(",") if args.models else [Model().model_name]
-        asyncio.run(cmd_fanout(args.site, args.runs, args.max_steps, names, args.concurrency))
+        variants = args.variants.split(",") if args.variants else None
+        asyncio.run(cmd_fanout(args.site, args.runs, args.max_steps, names, args.concurrency, variants=variants))
         return
 
     if args.control:
