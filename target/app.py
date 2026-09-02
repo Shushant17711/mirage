@@ -23,6 +23,7 @@ app = Flask(__name__)
 
 ATTACKS_PATH = Path(__file__).resolve().parent.parent / "attacks.yaml"
 EVENTS_PATH = Path(os.environ.get("MIRAGE_EVENTS_PATH", "/tmp/site/events.jsonl"))
+REPLAYS_PATH = Path(os.environ.get("MIRAGE_REPLAYS_PATH", "/tmp/site/replays"))
 
 with open(ATTACKS_PATH) as f:
     _ATTACKS = {a["id"]: a for a in yaml.safe_load(f)}
@@ -201,6 +202,34 @@ def events():
             if run_id is None or rec.get("run_id") == run_id:
                 out.append(rec)
     return jsonify(out)
+
+
+@app.route("/replay-events", methods=["GET", "POST"])
+def replay_events():
+    """Self-hosted rrweb capture. Solari's `recording=True` session replay
+    was verified live to never produce a replay once the browser navigates
+    to the sandbox's own previewUrl domain — confirmed across several
+    isolated tests (see runner/single_run.py's comment), independent of the
+    `pt_token` param or session length. This endpoint plus the recorder
+    snippet in templates/base.html reimplement replay capture ourselves in
+    the same rrweb NDJSON format, so results/player.html doesn't care which
+    path produced a given file."""
+    run_id = request.args.get("run_id", "default")
+    safe_id = "".join(c for c in run_id if c.isalnum() or c in "-_") or "default"
+    path = REPLAYS_PATH / f"{safe_id}.ndjson"
+
+    if request.method == "POST":
+        payload = request.get_json(force=True, silent=True) or {}
+        events = payload.get("events", [])
+        REPLAYS_PATH.mkdir(parents=True, exist_ok=True)
+        with open(path, "a") as f:
+            for ev in events:
+                f.write(json.dumps(ev) + "\n")
+        return jsonify({"status": "ok", "count": len(events)})
+
+    if not path.exists():
+        return "", 404
+    return path.read_text(), 200, {"Content-Type": "application/x-ndjson"}
 
 
 @app.route("/health")

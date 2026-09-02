@@ -82,22 +82,43 @@ async def _wait_healthy(url: str, attempts: int = 20) -> None:
 
 async def provision(from_snapshot: Optional[str] = None) -> dict:
     client = _client()
-    sandbox = await client.create(
-        template="base", timeout_ms=15 * 60_000, from_snapshot=from_snapshot,
-    )
-    await sandbox.connect()
+    try:
+        sandbox = await client.create(
+            template="base", timeout_ms=15 * 60_000, from_snapshot=from_snapshot,
+        )
+    except Exception:
+        await client.aclose()
+        raise
 
-    if from_snapshot is None:
-        await _upload_target(sandbox)
-        await _install_and_start(sandbox)
+    try:
+        await sandbox.connect()
 
-    info = await sandbox.preview_url(PORT)
-    url = info["url"]
-    await _wait_healthy(url)
+        if from_snapshot is None:
+            await _upload_target(sandbox)
+            await _install_and_start(sandbox)
 
-    snapshot_id = None
-    if from_snapshot is None:
-        snapshot_id = await sandbox.snapshot("warm")
+        info = await sandbox.preview_url(PORT)
+        url = info["url"]
+        await _wait_healthy(url)
+
+        # Live-tested 2026-09-02: snapshot() reliably fails with an
+        # undocumented `409 Not snapshottable` once the target's background
+        # Flask process is running — reproducible on a fresh sandbox with no
+        # prior snapshots, so not an account quota issue. Treated as
+        # non-fatal here since the from_snapshot() reset path (see the
+        # revert() workaround note above) already can't be used for a warm
+        # sandbox with a live server either way; a snapshot_id of None just
+        # means Day 4's reset falls back to a full re-provision.
+        snapshot_id = None
+        if from_snapshot is None:
+            try:
+                snapshot_id = await sandbox.snapshot("warm")
+            except Exception as e:  # noqa: BLE001
+                print(f"warning: snapshot('warm') failed, continuing without one: {e}")
+    except Exception:
+        await sandbox.kill()
+        await client.aclose()
+        raise
 
     result = {
         "sandbox_id": sandbox.sandboxId,

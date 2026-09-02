@@ -10,7 +10,7 @@ import os
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from openai import OpenAI
+from openai import AsyncOpenAI
 
 PROVIDER_BASE_URLS = {
     "groq": "https://api.groq.com/openai/v1",
@@ -61,15 +61,22 @@ class Model:
                 f"no base_url for provider={self.provider!r}; set LLM_BASE_URL "
                 f"or use one of {list(PROVIDER_BASE_URLS)}"
             )
-        self._client = OpenAI(
+        # MUST be the async client. A sync HTTP call here blocks the whole
+        # asyncio event loop for the length of the LLM request (tens of
+        # seconds on a slow provider) — which starves the Solari browser
+        # session's control-channel keepalives running on that same loop.
+        # Verified live: a sync client produced a `Control channel closed
+        # (1006)` abnormal disconnect and a session with no replay ever
+        # generated, even though the agent run itself completed normally.
+        self._client = AsyncOpenAI(
             api_key=self.api_key or os.environ["LLM_API_KEY"],
             base_url=resolved_base_url,
             timeout=60.0,
             max_retries=1,
         )
 
-    def step(self, messages: List[Dict[str, Any]], tools: List[Dict[str, Any]]) -> ModelReply:
-        resp = self._client.chat.completions.create(
+    async def step(self, messages: List[Dict[str, Any]], tools: List[Dict[str, Any]]) -> ModelReply:
+        resp = await self._client.chat.completions.create(
             model=self.model_name,
             messages=messages,
             tools=tools,

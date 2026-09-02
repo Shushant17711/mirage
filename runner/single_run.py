@@ -1,7 +1,18 @@
-"""Run one agent trial against the Solari backend: launch a recorded cloud
-browser, drive the agent loop against one target page, download the replay,
-and report cost. Full outcome scoring (score.py) and fan-out (fanout.py)
-build on top of this — Day 2's job is just one clean, measured, replayed run.
+"""Run one agent trial against the Solari backend: launch a cloud browser,
+drive the agent loop against one target page, pull the replay, and report
+cost. Full outcome scoring (score.py) and fan-out (fanout.py) build on top
+of this — Day 2's job is just one clean, measured, replayed run.
+
+Replay capture is self-hosted rrweb (see target/templates/base.html and the
+/replay-events route in target/app.py), not Solari's `recording=True`
+session replay. Verified live across four isolated tests that
+`recording=True` never produces a replay once the browser navigates to the
+sandbox's own previewUrl domain — reproducible independent of the pt_token
+query param or session length, and it poisons the whole session (an
+earlier example.com visit in the same session also stops being recordable).
+Since previewUrl is the one thing Mirage cannot do without, we capture rrweb
+events ourselves in the same NDJSON format instead of relying on that
+feature. Worth an issue report / DX-note entry.
 """
 
 from __future__ import annotations
@@ -64,38 +75,41 @@ async def run_once(
     model = Model()
 
     t0 = time.time()
-    session_id = None
     try:
-        browser = await solari.launch(recording=True)
-        session_id = browser.id
+        browser = await solari.launch()
         try:
             page = await browser.new_page()
             await page.goto(target_url)
             result = await run_agent(page, task=task, canary=canary, model=model, max_steps=max_steps)
+            # explicit final flush of the self-hosted rrweb recorder — see
+            # module docstring for why we don't use recording=True here.
+            try:
+                await page.evaluate(
+                    "window.__mirageFlushReplay && window.__mirageFlushReplay()"
+                )
+            except Exception:
+                pass
+            await asyncio.sleep(1)
         finally:
             await browser.close()
     finally:
         elapsed = time.time() - t0
+        await solari.close()
 
-    events_url = build_target_url(sandbox_state["preview_url"], "/events", {"run_id": run_id})
-    async with httpx.AsyncClient() as http:
-        ev_resp = await http.get(events_url, timeout=10)
-    events = ev_resp.json() if ev_resp.status_code == 200 else []
+    async with httpx.AsyncClient(timeout=10) as http:
+        events_url = build_target_url(sandbox_state["preview_url"], "/events", {"run_id": run_id})
+        ev_resp = await http.get(events_url)
+        events = ev_resp.json() if ev_resp.status_code == 200 else []
 
-    replay_path = None
-    if session_id:
-        for _ in range(10):
-            await asyncio.sleep(3)
-            try:
-                blob = await solari.sessions.download_replay(session_id)
-            except Exception:
-                continue
+        replay_path = None
+        replay_url = build_target_url(
+            sandbox_state["preview_url"], "/replay-events", {"run_id": run_id}
+        )
+        replay_resp = await http.get(replay_url)
+        if replay_resp.status_code == 200 and replay_resp.text.strip():
             REPLAYS_DIR.mkdir(parents=True, exist_ok=True)
             replay_path = REPLAYS_DIR / f"{run_id}.ndjson"
-            replay_path.write_bytes(blob)
-            break
-
-    await solari.close()
+            replay_path.write_text(replay_resp.text)
 
     return {
         "run_id": run_id,
@@ -110,6 +124,5 @@ async def run_once(
         "elapsed_s": round(elapsed, 1),
         "events": events,
         "replay_path": str(replay_path.relative_to(REPO_ROOT)) if replay_path else None,
-        "session_id": session_id,
         "model": model.model_name,
     }

@@ -201,7 +201,7 @@ async def run_agent(
     cost_usd = 0.0
 
     for step in range(1, max_steps + 1):
-        reply = model.step(messages, TOOLS)
+        reply = await model.step(messages, TOOLS)
         prompt_tokens += reply.usage.prompt_tokens
         completion_tokens += reply.usage.completion_tokens
         cost_usd += reply.usage.cost_usd

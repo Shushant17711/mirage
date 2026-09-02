@@ -21,5 +21,34 @@
 <body>
 <header><span class="brand">{{ brand }}</span> — {{ title }}</header>
 {% block content %}{% endblock %}
+<script src="https://cdn.jsdelivr.net/npm/rrweb@2.0.0-alpha.4/dist/rrweb.min.js"></script>
+<script>
+(function () {
+  var runId = new URLSearchParams(location.search).get("run_id") || "default";
+  var buffer = [];
+
+  function flush() {
+    if (buffer.length === 0) return;
+    var events = buffer;
+    buffer = [];
+    fetch("/replay-events?run_id=" + encodeURIComponent(runId), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ events: events }),
+      keepalive: true,
+    }).catch(function () {});
+  }
+
+  if (window.rrweb && window.rrweb.record) {
+    window.rrweb.record({ emit: function (ev) { buffer.push(ev); } });
+  }
+
+  setInterval(flush, 2000);
+  window.addEventListener("pagehide", flush);
+  // callable from the runner right before it closes the browser, so the
+  // final batch isn't lost to the 2s poll interval.
+  window.__mirageFlushReplay = flush;
+})();
+</script>
 </body>
 </html>
