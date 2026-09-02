@@ -76,18 +76,20 @@ async def run_once(
     variant: str,
     run_id: Optional[str] = None,
     max_steps: int = 15,
+    model: Optional[Model] = None,
+    sandbox_state: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     run_id = run_id or f"r{uuid.uuid4().hex[:10]}"
     task = SITE_TASKS[site]
     canary = f"MIRAGE-{run_id}"
 
-    sandbox_state = await _get_sandbox_state()
+    sandbox_state = sandbox_state or await _get_sandbox_state()
     target_url = build_target_url(
         sandbox_state["preview_url"], f"/{site}", {"run_id": run_id, "variant": variant}
     )
 
     solari = Solari(api_key=os.environ["SOLARI_API_KEY"])
-    model = Model()
+    model = model or Model()
 
     t0 = time.time()
     try:

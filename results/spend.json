@@ -90,6 +90,664 @@
       "prompt_tokens": 2079,
       "completion_tokens": 181,
       "cost_usd": 0.0
+    },
+    {
+      "run_id": "f7a4f183bdf",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2053,
+      "completion_tokens": 112,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8386f4b2a5",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2055,
+      "completion_tokens": 119,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8e1d1f7aa1",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2057,
+      "completion_tokens": 121,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f97465275fa",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2081,
+      "completion_tokens": 206,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fa2498ffc83",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2081,
+      "completion_tokens": 212,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f6659fc08df",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2083,
+      "completion_tokens": 171,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f32cfa29e3d",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2119,
+      "completion_tokens": 250,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f5593fa1907",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2101,
+      "completion_tokens": 190,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f9d9648de07",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2101,
+      "completion_tokens": 205,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f03446a0c3f",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2116,
+      "completion_tokens": 109,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f5b5e852384",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2113,
+      "completion_tokens": 194,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fa742438931",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2095,
+      "completion_tokens": 203,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f4c6a58478c",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2074,
+      "completion_tokens": 114,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f4f679a8e25",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2086,
+      "completion_tokens": 187,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fa4ee8047e6",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2084,
+      "completion_tokens": 230,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f86da80e7ce",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2072,
+      "completion_tokens": 215,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc51f56783a",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2115,
+      "completion_tokens": 274,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f189366a358",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2080,
+      "completion_tokens": 198,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe4931260cc",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2109,
+      "completion_tokens": 202,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc46e0fcb66",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2106,
+      "completion_tokens": 154,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f41e1061f64",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2084,
+      "completion_tokens": 105,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f051e310ef2",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2109,
+      "completion_tokens": 205,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f156d562d02",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2097,
+      "completion_tokens": 168,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f90b3711942",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2069,
+      "completion_tokens": 147,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ff09f01d4d3",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 3435,
+      "completion_tokens": 174,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fff1c6da0c0",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2087,
+      "completion_tokens": 180,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fb25bc4a2e4",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2076,
+      "completion_tokens": 155,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f4a3995cd98",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2072,
+      "completion_tokens": 130,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f44e018d9b9",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2118,
+      "completion_tokens": 163,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f14de8cdce3",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2084,
+      "completion_tokens": 147,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fbd14544416",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2079,
+      "completion_tokens": 170,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f4ecdf3db14",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2115,
+      "completion_tokens": 147,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f431ba011af",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2107,
+      "completion_tokens": 205,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd2a34351f8",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2106,
+      "completion_tokens": 120,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f67526cee0d",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2110,
+      "completion_tokens": 142,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f889093c097",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2107,
+      "completion_tokens": 203,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1115bdf76b",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2071,
+      "completion_tokens": 142,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f7f32813c1d",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2073,
+      "completion_tokens": 98,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe89af4772b",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2046,
+      "completion_tokens": 322,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f6428096b58",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2050,
+      "completion_tokens": 219,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fef4015cb89",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2046,
+      "completion_tokens": 230,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8f66aa3bbc",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2073,
+      "completion_tokens": 119,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe889e843ee",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2080,
+      "completion_tokens": 430,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f140c185270",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2099,
+      "completion_tokens": 862,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f527f450dba",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2080,
+      "completion_tokens": 257,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd20cf05d1d",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2122,
+      "completion_tokens": 436,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f15d3678cff",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2119,
+      "completion_tokens": 312,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd89576d79a",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2125,
+      "completion_tokens": 298,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fbb70c8aa53",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2116,
+      "completion_tokens": 419,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f40e98b6ab5",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2119,
+      "completion_tokens": 344,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f6dae67044d",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2116,
+      "completion_tokens": 324,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8ed0d64f2b",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2081,
+      "completion_tokens": 366,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "facce47bb8a",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2075,
+      "completion_tokens": 550,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1075b40f8a",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2083,
+      "completion_tokens": 431,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1eaa74a9ea",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2079,
+      "completion_tokens": 336,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f900cee7645",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2079,
+      "completion_tokens": 374,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f8e1c131e55",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2083,
+      "completion_tokens": 238,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f5789ae7a1c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2121,
+      "completion_tokens": 508,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f713a2b8fd2",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2121,
+      "completion_tokens": 521,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f694946b3e9",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2124,
+      "completion_tokens": 313,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fb757e03f62",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2121,
+      "completion_tokens": 555,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc66eff99a5",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2115,
+      "completion_tokens": 364,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f2050a3fb15",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2118,
+      "completion_tokens": 408,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f0f65598609",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2082,
+      "completion_tokens": 363,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f3e976eef3b",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2080,
+      "completion_tokens": 311,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fb5da755fb4",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2078,
+      "completion_tokens": 474,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ffb4fefcbbb",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2073,
+      "completion_tokens": 560,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f69aa450026",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2031,
+      "completion_tokens": 611,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f782b40feaa",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2079,
+      "completion_tokens": 320,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f627aa001dc",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2118,
+      "completion_tokens": 511,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe5bc29b552",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2118,
+      "completion_tokens": 416,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ff0bdcc54d1",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2118,
+      "completion_tokens": 311,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fde8c889a08",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2118,
+      "completion_tokens": 224,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd755ceae6c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2115,
+      "completion_tokens": 507,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f56937d4d94",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2082,
+      "completion_tokens": 457,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f0348e59b8c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2121,
+      "completion_tokens": 561,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f90341e1f2e",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2082,
+      "completion_tokens": 541,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f3646e1fd02",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2080,
+      "completion_tokens": 318,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c554fe1fbd0",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2085,
+      "completion_tokens": 191,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cb01a8804d6",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2075,
+      "completion_tokens": 151,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cc070019365",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2069,
+      "completion_tokens": 189,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c970a88bd5e",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2118,
+      "completion_tokens": 227,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c7dc5a05d27",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2075,
+      "completion_tokens": 185,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ce04c103996",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2069,
+      "completion_tokens": 214,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cca70188532",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2081,
+      "completion_tokens": 210,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ce4ac2ee80c",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2102,
+      "completion_tokens": 225,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c954e474fe5",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2101,
+      "completion_tokens": 189,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c459b773da9",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2113,
+      "completion_tokens": 154,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cecdb4f66c8",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2118,
+      "completion_tokens": 149,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ce98c884ad3",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2099,
+      "completion_tokens": 189,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c67c38c9bde",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2104,
+      "completion_tokens": 129,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "c85decb9804",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2069,
+      "completion_tokens": 115,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cbe7035bfd7",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2071,
+      "completion_tokens": 119,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "cef253ca413",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2079,
+      "completion_tokens": 182,
+      "cost_usd": 0.0
     }
   ],
   "total_cost_usd": 0.0

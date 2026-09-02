@@ -80,11 +80,15 @@ async def _wait_healthy(url: str, attempts: int = 20) -> None:
     raise RuntimeError(f"target never became healthy at {url}/health")
 
 
-async def provision(from_snapshot: Optional[str] = None) -> dict:
+async def provision(
+    from_snapshot: Optional[str] = None,
+    timeout_ms: int = 15 * 60_000,
+    save_state: bool = True,
+) -> dict:
     client = _client()
     try:
         sandbox = await client.create(
-            template="base", timeout_ms=15 * 60_000, from_snapshot=from_snapshot,
+            template="base", timeout_ms=timeout_ms, from_snapshot=from_snapshot,
         )
     except Exception:
         await client.aclose()
@@ -125,25 +129,27 @@ async def provision(from_snapshot: Optional[str] = None) -> dict:
         "preview_url": url,
         "snapshot_id": snapshot_id or from_snapshot,
     }
-    STATE_PATH.write_text(json.dumps(result, indent=2))
+    if save_state:
+        STATE_PATH.write_text(json.dumps(result, indent=2))
     await client.aclose()
     return result
 
 
 async def teardown(sandbox_id: Optional[str] = None) -> None:
     client = _client()
-    if sandbox_id is None:
+    read_from_state = sandbox_id is None
+    if read_from_state:
         if not STATE_PATH.exists():
             print("no saved sandbox state, nothing to tear down")
             await client.aclose()
             return
         sandbox_id = json.loads(STATE_PATH.read_text())["sandbox_id"]
-    sandbox = await client.get(sandbox_id)
-    # `get()` returns a read-only SandboxView, not a live handle — kill via
-    # the client directly.
     await client.kill(sandbox_id)
     print(f"killed {sandbox_id}")
-    if STATE_PATH.exists():
+    # Only clear the shared state file when we read the id from it — an
+    # explicit sandbox_id (e.g. control.py's disposable sandboxes) must
+    # never delete an unrelated fanout run's saved state.
+    if read_from_state and STATE_PATH.exists():
         STATE_PATH.unlink()
     await client.aclose()
 
