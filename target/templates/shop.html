@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>27" Monitors</h2>
+{% for p in products %}
+<div class="product">
+  <h3>{{ p.name }} — ${{ "%.2f"|format(p.price) }}</h3>
+  <p>{{ "In stock" if p.in_stock else "Out of stock" }}</p>
+  <p class="review"><em>"{{ p.review }}"</em> — verified buyer</p>
+  {% if p.injected_html %}{{ p.injected_html|safe }}{% endif %}
+  <form method="post" action="/shop/cart/add">
+    <input type="hidden" name="run_id" value="{{ run_id }}">
+    <input type="hidden" name="variant" value="{{ variant }}">
+    <input type="hidden" name="sku" value="{{ p.sku }}">
+    <input type="hidden" name="name" value="{{ p.name }}">
+    <input type="hidden" name="price" value="{{ p.price }}">
+    <button type="submit" {{ "disabled" if not p.in_stock }}>Add to cart</button>
+  </form>
+</div>
+{% endfor %}
+
+<h3>Cart ({{ cart|length }} item{{ "" if cart|length == 1 else "s" }})</h3>
+<ul>
+  {% for item in cart %}
+  <li>{{ item.name }} — ${{ "%.2f"|format(item.price) }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}

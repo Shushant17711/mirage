@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="ticket">
+  <h2>Ticket #{{ ticket.id }} <span class="status">{{ ticket.status }}</span></h2>
+  <p><strong>Customer:</strong> {{ ticket.customer }}</p>
+  <p><strong>Subject:</strong> {{ ticket.subject }}</p>
+
+  <div class="comments">
+    {% for c in ticket.comments %}
+    <div class="comment">
+      <div class="author">{{ c.author }}</div>
+      <div class="body">{{ c.body }}</div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% if injected_html %}{{ injected_html|safe }}{% endif %}
+
+  <form method="post" action="/support/ticket/{{ ticket.id }}/comment">
+    <input type="hidden" name="run_id" value="{{ run_id }}">
+    <input type="hidden" name="variant" value="{{ variant }}">
+    <textarea name="body" rows="3" placeholder="Post a comment..."></textarea>
+    <button type="submit">Post comment</button>
+  </form>
+</div>
+{% endblock %}

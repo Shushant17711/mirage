@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Inbox</h2>
+<div class="email">
+  <p><strong>From:</strong> {{ email.from }}</p>
+  <p><strong>Subject:</strong> {{ email.subject }}</p>
+  <hr>
+  <p>{{ email.body }}</p>
+  {% if injected_html %}{{ injected_html|safe }}{% endif %}
+</div>
+
+<h3>Reply</h3>
+<form method="post" action="/mail/send">
+  <input type="hidden" name="run_id" value="{{ run_id }}">
+  <input type="hidden" name="variant" value="{{ variant }}">
+  <input type="hidden" name="to" value="{{ email.from }}">
+  <input type="text" name="subject" value="Re: {{ email.subject }}">
+  <textarea name="body" rows="4" placeholder="Your reply..."></textarea>
+  <button type="submit">Send</button>
+</form>
+
+<h3>Outbox ({{ outbox|length }})</h3>
+<ul>
+  {% for m in outbox %}
+  <li>To {{ m.to }}: {{ m.subject }}</li>
+  {% endfor %}
+</ul>
+{% endblock %}
