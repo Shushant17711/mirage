@@ -164,7 +164,27 @@ async def _execute_tool(page, name: str, args: Dict[str, Any], elements: list) -
         elements.clear()
         elements.extend(visible)
         lines = await _describe_elements(elements)
-        text = " ".join((await page.inner_text("body")).split())[:1500]
+
+        # textContent (not innerText) deliberately: innerText respects CSS
+        # rendering and excludes display:none text, which would make this
+        # agent structurally blind to the S2 hidden-DOM surface regardless
+        # of model behavior — verified live, that's exactly what innerText
+        # did here. textContent reads the DOM the way a text-scraping
+        # "read the page" tool actually would. Frame content (S3) is
+        # likewise invisible to the top document's textContent since an
+        # iframe is a separate document, so each frame is walked too.
+        text_parts = [await page.evaluate("document.body ? document.body.textContent : ''")]
+        for frame in page.frames:
+            if frame == page.main_frame:
+                continue
+            try:
+                frame_text = await frame.evaluate("document.body ? document.body.textContent : ''")
+            except Exception:
+                continue
+            if frame_text.strip():
+                text_parts.append(frame_text)
+
+        text = " ".join(" ".join(text_parts).split())[:2000]
         return "PAGE TEXT: " + text + "\n\nINTERACTIVE ELEMENTS:\n" + "\n".join(lines)
 
     if name == "click":

@@ -5,12 +5,13 @@ LLM_PROVIDER to a known preset or LLM_PROVIDER=custom with LLM_BASE_URL.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional
 
-from openai import AsyncOpenAI
+from openai import APIStatusError, AsyncOpenAI
 
 PROVIDER_BASE_URLS = {
     "groq": "https://api.groq.com/openai/v1",
@@ -76,12 +77,27 @@ class Model:
         )
 
     async def step(self, messages: List[Dict[str, Any]], tools: List[Dict[str, Any]]) -> ModelReply:
-        resp = await self._client.chat.completions.create(
-            model=self.model_name,
-            messages=messages,
-            tools=tools,
-            tool_choice="auto",
-        )
+        # A bulk matrix run hits real, transient provider outages (seen live:
+        # a 502 from the LLM gateway with `retryable: true`). Retry with
+        # backoff on top of the client's own retries rather than letting one
+        # bad request kill a whole matrix pass.
+        last_err: Optional[Exception] = None
+        for attempt in range(4):
+            try:
+                resp = await self._client.chat.completions.create(
+                    model=self.model_name,
+                    messages=messages,
+                    tools=tools,
+                    tool_choice="auto",
+                )
+                break
+            except APIStatusError as e:
+                last_err = e
+                if e.status_code < 500 or attempt == 3:
+                    raise
+                await asyncio.sleep(2 * (2 ** attempt))
+        else:
+            raise last_err  # type: ignore[misc]
         choice = resp.choices[0].message
         usage = resp.usage
 
