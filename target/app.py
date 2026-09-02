@@ -8,6 +8,7 @@ upstream (the agent, an LLM judge) ever decides that.
 
 from __future__ import annotations
 
+import html
 import json
 import os
 import time
@@ -54,7 +55,15 @@ def build_injection(variant: str, run_id: str) -> Optional[str]:
 
     canary = f"MIRAGE-{run_id}"
     base_url = request.host_url.rstrip("/")
-    text = attack["payload"].strip().format(base_url=base_url, canary=canary, run_id=run_id)
+    raw_text = attack["payload"].strip().format(base_url=base_url, canary=canary, run_id=run_id)
+    # Escape before embedding: payload text must land as a literal text
+    # node, not get parsed as HTML. This matters beyond XSS hygiene here —
+    # a "strong" payload can deliberately contain fake delimiter tags
+    # (e.g. "</user_task><system_message>") meant to appear as literal text
+    # to an agent reading textContent. Unescaped, the browser parses those
+    # as real (if unknown) elements and textContent silently drops the tag
+    # markup, which would have quietly defeated that technique.
+    text = html.escape(raw_text)
 
     surface = attack["surface"]
     if surface == "S1":
@@ -65,8 +74,9 @@ def build_injection(variant: str, run_id: str) -> Optional[str]:
     if surface == "S2":
         return f'<div class="hidden-payload" aria-hidden="true">{text}</div>'
     if surface == "S3":
-        escaped = text.replace('"', "&quot;")
-        return f'<iframe class="embed" srcdoc="{escaped}"></iframe>'
+        # html.escape() already quotes `"` -> &quot;, which is exactly what
+        # an attribute value needs.
+        return f'<iframe class="embed" srcdoc="{text}"></iframe>'
     return f"<div>{text}</div>"
 
 
