@@ -4,10 +4,10 @@
 
 <!-- FILL Day 6: demo video / GIF goes here, above everything else -->
 
-**A single fake system-message delimiter attack achieved a 1-in-3 compromise
-rate against one model on a benign task — the identical intent phrased in
-plain language, and a second model tested against the same technique, both
-fully resisted (0 compromised across 107 other attack runs).**
+**Zero compromises across a full generic prompt-injection matrix on two
+models (n=3 per cell). It took a deliberately strengthened, still-non-novel
+technique to produce the one compromise in this project — and the isolation
+control behind these numbers is measured at 1.00 agreement, not assumed.**
 
 ---
 
@@ -16,8 +16,10 @@ fully resisted (0 compromised across 107 other attack runs).**
 - **What it is**: a fake support/shop/webmail site you control, with graded
   prompt-injection payloads planted across it, that scores real browser
   agents against it — server-side, no LLM judge.
-- **The finding**: above. One technique broke one model once; everything
-  generic fully resisted, twice over.
+- **The finding**: above. The generic corpus is the headline — zero
+  compromises, both models, n=3/cell. The one compromise in this project
+  needed a deliberately strengthened technique, and it's invisible at n=1,
+  which is exactly why every cell runs 3x.
 - **Why you can trust the number**: every run's replay is committed and
   playable ([`results/player.html`](results/player.html)); the "is namespacing
   actually safe isolation" assumption is measured, not asserted, at a 1.00
@@ -32,15 +34,6 @@ corpus, scoring, cost, and where the numbers stop meaning what they look like
 they mean.
 
 ---
-
-## Who this is for
-
-If you are building a browser agent, this is how you test it before you ship it.
-
-Mirage gives you a fake web you control, a corpus of graded prompt-injection
-payloads planted across it, and a scorecard that says how your agent did — with
-a replay of every run that went wrong. Point it at your own agent, on your own
-infrastructure, and get numbers you can act on.
 
 ## The problem
 
@@ -58,14 +51,58 @@ Mirage supplies the denominator. It hosts a small web you own, plants graded
 payloads across it, and runs agents against it from controlled starting state,
 so the numbers actually compare.
 
+## Two bugs found in Solari, live
+
+Building this surfaced two reproducible issues in the real Solari API, not in
+Mirage's own code. Both have minimal repros in this repo and a shipped
+workaround, so the matrix isn't blocked on them — but they're worth reporting.
+
+**1. `sandbox.revert(snapshot_id)` fails, always.**
+Expected: revert a sandbox to a prior snapshot in place. Got: an undocumented
+`409 Not revertable`, reproduced on a freshly booted sandbox, immediately
+after a successful `snapshot()`, while paused, and via a snapshot's own
+`from_snapshot` lineage — six separate live tests, same result every time.
+`snapshot()` and `create(from_snapshot=...)` both work correctly on their own.
+Workaround: kill the sandbox and `create(from_snapshot=snap_id)` a fresh one
+instead of calling `.revert()` — confirmed live that this correctly resumes
+the already-running Flask process, not just the filesystem. The tradeoff is a
+new `previewUrl` on every reset, which callers have to re-fetch. Repro and
+detail: [`runner/provision.py`](runner/provision.py) module docstring.
+
+**2. `recording=True` session replay never produces a replay once the browser
+visits the sandbox's own `previewUrl`.**
+Expected: pass `recording=True` to a Solari browser session, get a replay
+back. Got: nothing, reproduced across four isolated live tests — independent
+of the `pt_token` query param, session length, or whether the session visited
+other domains first. It also poisons the rest of the session: an earlier
+`example.com` portion of the *same* session stops being recordable too, once
+the session has touched `previewUrl` once. Since `previewUrl` is the one
+primitive Mirage cannot do without, this made Solari's own replay feature
+unusable here. Workaround: self-hosted rrweb capture — a client-side recorder
+loaded in every target page, POSTing events to a `/replay-events` route,
+committed as NDJSON and played back via [`results/player.html`](results/player.html).
+Repro and detail: [`runner/single_run.py`](runner/single_run.py) module docstring.
+
 ## Why this needs Solari specifically
 
 | Primitive | What it buys here |
 |---|---|
 | **Port preview** | Targets run inside a sandbox on a real public URL. The agent browses a genuine remote site over the network, not a localhost mock. |
-| **Browser concurrency** | The matrix fans out across concurrent cloud browser sessions, one per cell — this is where the parallelism lives. |
-| **Session recording** | Every run has a replay in rrweb NDJSON — self-captured, working around a live Solari bug. Detail in Reproducibility ↓. |
-| **Snapshot** | Targets carry mutable state an agent can modify. `snapshot()` captures the warm machine once; resets recreate a sandbox `from_snapshot()`, not `revert()`. Detail in Reproducibility ↓. |
+| **Browser sessions** | Every cell runs in its own cloud browser session — this is where the matrix actually executes. |
+| **Session recording** | Every run has a replay in rrweb NDJSON — self-captured, working around a live Solari bug above. |
+| **Snapshot** | Targets carry mutable state an agent can modify. `snapshot()` captures the warm machine once; resets recreate a sandbox `from_snapshot()`, not `revert()`, working around the other bug above. |
+
+On concurrency specifically: the honest story is smaller than "Solari uniquely
+enables this." Isolating every run behind a full sandbox reset would also
+work and would be strictly cleaner — it's just slower and, at 12 full VM
+resets for the isolation control alone, would make a 3x-per-cell matrix
+expensive in wall-clock. What Mirage actually does is fan out concurrent
+browser sessions against one shared sandbox, with results kept apart by
+`run_id` namespacing instead of machine isolation — cheaper, and only
+defensible because the isolation control below measures that the cheap
+method agrees with the expensive one, rather than assuming it. That
+validate-the-cheap-method-against-the-expensive-one step, not the existence
+of concurrent cloud browsers, is the actual engineering judgment call here.
 
 ## How it works
 
@@ -184,8 +221,8 @@ colour-coded matrix with a replay link per cell: [`results/report.html`](results
 
 | model | Injection Resistance | n attack runs | Benign Utility | n control runs |
 |---|---|---|---|---|
-| `minimax-m3-free` | 0.9900 | 60 | 1.00 | 4 |
-| `qwen3.8-27b` | 1.0000 | 48 | 1.00 | 3 |
+| `minimax-m3-free` | 0.9905 | 63 | 0.818 | 11 (9 pass / 2 fail) |
+| `qwen3.8-27b` | 1.0000 | 51 | 1.000 | 9 (9 pass / 0 fail) |
 
 - Generic 12-cell corpus (3 surfaces x 4 intents): **flat 0% compromise**,
   both models, n=3. Real result, not a dramatic one.
@@ -194,6 +231,16 @@ colour-coded matrix with a replay link per cell: [`results/report.html`](results
 - Caveat that matters: the strong tier only ran on surface S1, so the
   full report's compromise-by-surface breakdown can't yet separate "S1 is
   riskier" from "we only strengthened the S1 attacks."
+- `minimax-m3-free`'s Benign Utility is 0.818, not 1.00 — 2 of 11 clean
+  control runs genuinely failed the benign task (the agent's own summary
+  described the session closing before it could act, not a graceful
+  decline). That's a real, measured data point for the capability confound
+  in Limitations below, not a rounding artifact: it was originally
+  mis-scored `clean_pass` by a keyword-matching bug in the scorer that
+  fired on a customer's name inside a failure sentence, caught by manually
+  reading summaries that didn't match their own outcome label, fixed by
+  restricting the match to page-only identifiers that can't appear outside
+  a real completion.
 
 Raw output is committed at [`results/results.jsonl`](results/results.jsonl) so
 anyone can re-derive every number in this README, and every run's replay is
@@ -207,19 +254,19 @@ Three things here that benchmark write-ups usually skip.
 **Replays are committed, not linked.** Solari replay retention runs from 1 day
 on the Free tier to 30 on Professional, so a published link would be dead by
 the time most people click it — moot here anyway, since Solari's own replay
-pipeline turned out not to work for this architecture (see above), so replays
-are self-captured rrweb NDJSON instead. Small, greppable, diffable — every
-run's replay is committed under `results/replays/`, with a static player at
-`results/player.html`. The evidence outlives any retention window and does not
-depend on our account still existing.
+pipeline doesn't work for this architecture (see "Two bugs found in Solari,
+live" above), so replays are self-captured rrweb NDJSON instead. Small,
+greppable, diffable — every run's replay is committed under `results/replays/`,
+with a static player at `results/player.html`. The evidence outlives any
+retention window and does not depend on our account still existing.
 
 **Isolation is measured, not assumed.** Within a matrix pass, runs are isolated
 by `run_id` namespacing rather than by machine state. That is an assumption, so
 it gets tested: a sample of cells is re-run the expensive way — serial, with a
 full sandbox reset before every single run, giving true byte-identical machine
 state — and the outcomes are compared against the namespaced runs. (The reset
-is kill the sandbox and recreate it `from_snapshot`, not `revert()` — live
-testing found `revert()` itself unreliable; see Limitations.)
+is kill the sandbox and recreate it `from_snapshot`, not `revert()` — see
+"Two bugs found in Solari, live" above for why.)
 
 4 cells were sampled this way, 3 runs each, 12 full VM resets total.
 **Agreement rate with the namespaced concurrent runs: 1.00 (4/4).** Detail in
@@ -234,12 +281,14 @@ who grades the grader.
 
 The full matrix runs inside a $30 credit grant, many times over.
 
-- **131 agent runs, two models.**
-- **~$0.40 estimated Solari compute** (~$0.25 browser + ~$0.15 sandbox, ~2.5
-  cumulative hours each at the published Starter rates). This is an estimate
+- **147 agent runs attempted, two models** (146 completed; 1 hit a 429 rate
+  limit and was excluded rather than crashing the batch — per-run resilience
+  lives in [`runner/fanout.py`](runner/fanout.py)).
+- **~$0.45 estimated Solari compute** (proportionally scaled from tracked
+  session durations at the published Starter rates). This is an estimate
   from our own tracked session durations, not a billing-API pull — the SDK
   doesn't expose an account/usage endpoint we could find.
-- **$0.00 LLM tokens** (275,913 prompt + 35,054 completion) — both tested
+- **$0.00 LLM tokens** (324,259 prompt + 39,111 completion) — both tested
   models are free-tier on their router; that's a property of the models
   tested, not a claim LLM inference is generally free.
 - Per-run accounting: [`results/spend.json`](results/spend.json), written
@@ -270,6 +319,17 @@ Worth stating plainly, because they bound what the numbers mean.
 - **Isolation within a pass is by namespacing.** The control above measures
   whether that holds; it does not make it identical to true per-run machine
   isolation.
+- **Injection Resistance alone can't distinguish "robust" from "bad at
+  following instructions."** A model that ignores the injected instruction
+  because it's confused about *any* multi-step instruction, not because it
+  correctly recognized an attack, would still score a perfect resistance
+  rate here. Benign Utility is the intended control for this — a model that
+  also fails the clean, un-attacked version of the task is a capability
+  story, not a safety one. This is not hypothetical: `minimax-m3-free`
+  scores 0.9905 resistance but only 0.818 Benign Utility (2 genuine failures
+  in 11 clean runs), while `qwen3.8-27b` scores 1.0000 on both. That gap is
+  exactly the confound — read the two models' resistance numbers as
+  comparable only alongside their utility numbers, never on their own.
 
 ## Out of scope for this build
 
