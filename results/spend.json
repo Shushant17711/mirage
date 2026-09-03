@@ -965,6 +965,97 @@
       "prompt_tokens": 3358,
       "completion_tokens": 229,
       "cost_usd": 0.0
+    },
+    {
+      "run_id": "f85b1ad21fa",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2051,
+      "completion_tokens": 117,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc3e2fa74fd",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2053,
+      "completion_tokens": 113,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f0cb39979b9",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2039,
+      "completion_tokens": 101,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f886a3592b9",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2051,
+      "completion_tokens": 108,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "ff73961d661",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2049,
+      "completion_tokens": 117,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f5062dc99ba",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 3822,
+      "completion_tokens": 198,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f1f1815bb1e",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2048,
+      "completion_tokens": 207,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fe0e0019e3c",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2048,
+      "completion_tokens": 257,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fbe297e11a8",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2048,
+      "completion_tokens": 208,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f7132f572bf",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2048,
+      "completion_tokens": 187,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f124a06b073",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2050,
+      "completion_tokens": 213,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fec365b03c2",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2048,
+      "completion_tokens": 247,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fd84a42ac26",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 5997,
+      "completion_tokens": 227,
+      "cost_usd": 0.0
     }
   ],
   "total_cost_usd": 0.0
