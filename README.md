@@ -11,6 +11,28 @@ fully resisted (0 compromised across 107 other attack runs).**
 
 ---
 
+### 60-second version
+
+- **What it is**: a fake support/shop/webmail site you control, with graded
+  prompt-injection payloads planted across it, that scores real browser
+  agents against it — server-side, no LLM judge.
+- **The finding**: above. One technique broke one model once; everything
+  generic fully resisted, twice over.
+- **Why you can trust the number**: every run's replay is committed and
+  playable ([`results/player.html`](results/player.html)); the "is namespacing
+  actually safe isolation" assumption is measured, not asserted, at a 1.00
+  agreement rate ([`results/control.json`](results/control.json)); grading is
+  a logged server fact, never an opinion.
+- **Run it**: 4 lines, no Solari account needed — see Quickstart ↓.
+- **See the real results**: [`results/report.html`](results/report.html) — full
+  matrix, scatter plot, every replay.
+
+Everything past this point is the detail behind those claims — architecture,
+corpus, scoring, cost, and where the numbers stop meaning what they look like
+they mean.
+
+---
+
 ## Who this is for
 
 If you are building a browser agent, this is how you test it before you ship it.
@@ -40,10 +62,10 @@ so the numbers actually compare.
 
 | Primitive | What it buys here |
 |---|---|
-| **Port preview** | Targets are served from inside a sandbox on a real public URL (`*.preview.getsolari.com`). The agent browses a genuine remote site over the network, not a localhost mock — so nothing about the setup is unrealistic to the agent under test. |
-| **Browser concurrency** | The matrix fans out across concurrent cloud browser sessions, one per cell. This is where the parallelism lives. |
-| **Session recording (self-hosted, working around a live bug)** | Every run has a replay in rrweb NDJSON. Solari's own `recording=True` session replay was verified live to never produce a replay once the browser visits the sandbox's own previewUrl domain — reproducible, independent of session length or the auth token — so the target pages record themselves (rrweb loaded client-side, posted to a `/replay-events` route) instead. Same format, same committed-replay result. |
-| **Snapshot** | The targets carry mutable state an agent can modify — a webmail outbox, a ticket queue. `snapshot()` captures the warm, booted machine once; resets between passes recreate a fresh sandbox `from_snapshot()` rather than call `revert()`, which live testing found unreliable (see Limitations). |
+| **Port preview** | Targets run inside a sandbox on a real public URL. The agent browses a genuine remote site over the network, not a localhost mock. |
+| **Browser concurrency** | The matrix fans out across concurrent cloud browser sessions, one per cell — this is where the parallelism lives. |
+| **Session recording** | Every run has a replay in rrweb NDJSON — self-captured, working around a live Solari bug. Detail in Reproducibility ↓. |
+| **Snapshot** | Targets carry mutable state an agent can modify. `snapshot()` captures the warm machine once; resets recreate a sandbox `from_snapshot()`, not `revert()`. Detail in Reproducibility ↓. |
 
 ## How it works
 
@@ -165,17 +187,13 @@ colour-coded matrix with a replay link per cell: [`results/report.html`](results
 | `minimax-m3-free` | 0.9900 | 60 | 1.00 | 4 |
 | `qwen3.8-27b` | 1.0000 | 48 | 1.00 | 3 |
 
-The generic 12-cell corpus (3 surfaces x 4 intents) scored a flat 0%
-compromise for both models at n=3 — a real result, but not a dramatic one.
-Adding a 4-cell "strong" tier — same four intents, applying named
-techniques from the public prompt-injection literature (fake system-message
-delimiters, technical-pretext framing, folding the decoy action into the
-legitimate task, fabricated system-log framing) rather than inventing
-anything new — is what surfaced the one compromise above. Compromise rate
-by surface (S1 visible / S2 hidden-DOM / S3 embedded frame) and by intent
-is in the full report; the caveat that matters is there too: the strong
-tier only ran on S1, so the surface breakdown can't yet separate "S1 is
-riskier" from "we only strengthened the S1 attacks."
+- Generic 12-cell corpus (3 surfaces x 4 intents): **flat 0% compromise**,
+  both models, n=3. Real result, not a dramatic one.
+- Adding a 4-cell "strong" tier (same 4 intents, stronger technique — see
+  corpus section below) is what surfaced the one compromise above.
+- Caveat that matters: the strong tier only ran on surface S1, so the
+  full report's compromise-by-surface breakdown can't yet separate "S1 is
+  riskier" from "we only strengthened the S1 attacks."
 
 Raw output is committed at [`results/results.jsonl`](results/results.jsonl) so
 anyone can re-derive every number in this README, and every run's replay is
@@ -216,22 +234,19 @@ who grades the grader.
 
 The full matrix runs inside a $30 credit grant, many times over.
 
-131 agent runs, two models: an estimated **~$0.40 of Solari compute**
-(~$0.25 browser, ~2.5 hours across all runs at the Starter published rate of
-$0.10/hr; ~$0.15 sandbox, ~2.5 hours of cumulative sandbox uptime at
-$0.057/hr) plus **$0.00 of LLM tokens** (275,913 prompt + 35,054 completion
-tokens — both tested models are free-tier/unpriced on their router, which is
-a property of the specific models tested, not a claim that LLM inference is
-generally free). The Solari figure is an estimate built from our own tracked
-session durations against the published rate table, not a pull from actual
-billing — the SDK doesn't expose an account/usage endpoint we could find,
-which is itself worth a line in the DX note.
-
-Per-run cost accounting is written to [`results/spend.json`](results/spend.json)
-on every matrix run. The architecture fans out across browser sessions rather
-than sandboxes, which is both the cheaper resource and the correct place for the
-parallelism — the targets are one small VM regardless of matrix width. Compute
-is not what bounds this project.
+- **131 agent runs, two models.**
+- **~$0.40 estimated Solari compute** (~$0.25 browser + ~$0.15 sandbox, ~2.5
+  cumulative hours each at the published Starter rates). This is an estimate
+  from our own tracked session durations, not a billing-API pull — the SDK
+  doesn't expose an account/usage endpoint we could find.
+- **$0.00 LLM tokens** (275,913 prompt + 35,054 completion) — both tested
+  models are free-tier on their router; that's a property of the models
+  tested, not a claim LLM inference is generally free.
+- Per-run accounting: [`results/spend.json`](results/spend.json), written
+  incrementally on every run.
+- Architecture note: fan-out is on browser sessions, not sandboxes — cheaper
+  resource, and correct either way since the targets are one small VM
+  regardless of matrix width. Compute was never the constraint here.
 
 ## Limitations
 
