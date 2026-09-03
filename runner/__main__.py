@@ -160,10 +160,18 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.backend == "local":
-        raise SystemExit(
-            "backend=local isn't built yet (Day 2 focused on the real Solari "
-            "path to get a genuine replay). Use --backend solari."
+        if args.fanout or args.control or args.all:
+            raise SystemExit(
+                "backend=local only supports a single run (no --fanout/--control/--all — "
+                "those need a Solari account). Use --backend solari for the full matrix."
+            )
+        from runner.local_backend import run_once_local
+
+        record = asyncio.run(
+            run_once_local(args.site, args.variant, run_id=args.run_id, max_steps=args.max_steps)
         )
+        print(json.dumps(record, indent=2))
+        return
 
     if args.fanout:
         names = args.models.split(",") if args.models else [Model().model_name]

@@ -916,6 +916,13 @@
       "prompt_tokens": 2101,
       "completion_tokens": 477,
       "cost_usd": 0.0
+    },
+    {
+      "run_id": "l9f4ce15f7f",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2100,
+      "completion_tokens": 141,
+      "cost_usd": 0.0
     }
   ],
   "total_cost_usd": 0.0

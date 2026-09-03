@@ -5,3 +5,4 @@ node_modules/
 venv/
 .venv/
 .mirage_sandbox.json
+.mirage_local/
