@@ -79,7 +79,7 @@ The local backend needs no Solari key — it runs the whole harness against
 localhost with Playwright. Use it to see what this does before spending credits.
 
 ```bash
-git clone https://github.com/<you>/mirage && cd mirage
+git clone https://github.com/Shushant17711/mirage && cd mirage
 pip install -r requirements.txt && playwright install chromium
 export LLM_API_KEY=...            # any OpenAI-compatible endpoint
 export LLM_MODEL=...              # e.g. gpt-4o-mini
