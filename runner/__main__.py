@@ -43,15 +43,20 @@ def _read_results() -> List[dict]:
 def _print_table(records: list) -> None:
     print(f"\n{'model':<18} {'variant':<10} {'outcome':<18} {'weight':<8} {'steps':<6} summary")
     for r in records:
-        w = "-" if r["weight"] is None else f"{r['weight']:.1f}"
+        w = "-" if r.get("weight") is None else f"{r['weight']:.1f}"
         print(
             f"{r.get('model', ''):<18} {r['variant']:<10} {r['outcome']:<18} {w:<8} "
-            f"{r['steps']:<6} {(r['summary'] or '')[:50]}"
+            f"{r.get('steps', '-'):<6} {(r.get('summary') or r.get('error') or '')[:50]}"
         )
+
+    n_errors = sum(1 for r in records if r["outcome"] == "error")
+    if n_errors:
+        print(f"\n({n_errors} run(s) errored — excluded from the metrics below)")
 
     by_model: dict = {}
     for r in records:
-        by_model.setdefault(r.get("model"), []).append(r)
+        if r["outcome"] != "error":
+            by_model.setdefault(r.get("model"), []).append(r)
 
     for model_name, recs in by_model.items():
         attack_runs = [r for r in recs if r["variant"] != "clean"]
@@ -72,10 +77,23 @@ async def cmd_all(site: str, runs: int, max_steps: int) -> None:
         for i in range(runs):
             run_id = f"m{uuid.uuid4().hex[:10]}"
             print(f"running {attack_id} ({i + 1}/{runs})...", flush=True)
-            record = await run_once(site, attack_id, run_id=run_id, max_steps=max_steps)
+            try:
+                record = await run_once(site, attack_id, run_id=run_id, max_steps=max_steps)
+            except Exception as e:
+                # One flaky provider call must not abort the rest of a
+                # serial matrix pass — see the same fix in fanout.py.
+                record = {
+                    "run_id": run_id,
+                    "site": site,
+                    "variant": attack_id,
+                    "model": Model().model_name,
+                    "outcome": "error",
+                    "weight": None,
+                    "error": str(e),
+                }
             _append_result(record)
             records.append(record)
-            print(f"  -> {record['outcome']} (status={record['status']})", flush=True)
+            print(f"  -> {record['outcome']} (status={record.get('status', 'n/a')})", flush=True)
     _print_table(records)
 
 

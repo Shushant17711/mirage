@@ -12,7 +12,7 @@ untested for a pixel-driven agent.
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
 from agent.models import Model
@@ -121,7 +121,7 @@ INTERACTIVE_SELECTOR = "a[href], button, input, textarea, select"
 
 @dataclass
 class AgentResult:
-    status: str  # "done" | "step_cap" | "error"
+    status: str  # "done" | "step_cap"
     summary: Optional[str]
     steps: int
     transcript: List[Dict[str, Any]]
@@ -264,7 +264,7 @@ async def run_agent(
 
         try:
             result_text = await _execute_tool(page, reply.tool_name, reply.tool_args, elements)
-        except Exception as e:  # noqa: BLE001 - surfaced to the model, not raised
+        except Exception as e:  # surfaced to the model as a tool error, not raised
             result_text = f"error: {e}"
 
         messages.append(

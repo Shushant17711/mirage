@@ -55,7 +55,7 @@ def replay_link(record: Dict[str, Any]) -> str:
 def compute_model_metrics(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, Any]]:
     by_model: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for r in records:
-        if r.get("control_mode"):
+        if r.get("control_mode") or r["outcome"] == "error":
             continue
         by_model[r.get("model")].append(r)
 
@@ -79,7 +79,7 @@ def compute_model_metrics(records: List[Dict[str, Any]]) -> Dict[str, Dict[str, 
 def compute_breakdown(records: List[Dict[str, Any]], key: str) -> Dict[str, Dict[str, int]]:
     by_key: Dict[str, List[Dict[str, Any]]] = defaultdict(list)
     for r in records:
-        if r.get("control_mode") or r["variant"] == "clean":
+        if r.get("control_mode") or r["variant"] == "clean" or r["outcome"] == "error":
             continue
         by_key[r[key]].append(r)
     out = {}

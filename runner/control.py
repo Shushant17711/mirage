@@ -53,7 +53,7 @@ async def run_control(
                         sandbox_state=sandbox_state,
                     )
                     record["control_mode"] = "serial_full_reset"
-                except Exception as e:  # noqa: BLE001
+                except Exception as e:  # any failure here becomes an "error" outcome, not a crash
                     record = {
                         "run_id": run_id,
                         "site": site,

@@ -923,6 +923,48 @@
       "prompt_tokens": 2100,
       "completion_tokens": 141,
       "cost_usd": 0.0
+    },
+    {
+      "run_id": "f3b2d68cf7e",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2106,
+      "completion_tokens": 136,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f5902085c27",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2096,
+      "completion_tokens": 237,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f79d24975db",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2120,
+      "completion_tokens": 361,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f48553075e5",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 2101,
+      "completion_tokens": 212,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "f3d5af920fa",
+      "model": "qwen3.8-27b",
+      "prompt_tokens": 2113,
+      "completion_tokens": 441,
+      "cost_usd": 0.0
+    },
+    {
+      "run_id": "fc1f90d53a9",
+      "model": "minimax-m3-free",
+      "prompt_tokens": 3358,
+      "completion_tokens": 229,
+      "cost_usd": 0.0
     }
   ],
   "total_cost_usd": 0.0

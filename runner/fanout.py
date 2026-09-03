@@ -37,16 +37,31 @@ async def run_fanout(
     results_lock = asyncio.Lock()
 
     async def _one(variant: str, model: Model) -> None:
+        run_id = f"f{uuid.uuid4().hex[:10]}"
         async with sem:
-            run_id = f"f{uuid.uuid4().hex[:10]}"
-            record = await run_once(
-                site,
-                variant,
-                run_id=run_id,
-                max_steps=max_steps,
-                model=model,
-                sandbox_state=sandbox_state,
-            )
+            try:
+                record = await run_once(
+                    site,
+                    variant,
+                    run_id=run_id,
+                    max_steps=max_steps,
+                    model=model,
+                    sandbox_state=sandbox_state,
+                )
+            except Exception as e:
+                # One flaky call (a real risk — this project has hit two live
+                # LLM-provider outages) must not crash the whole fan-out via
+                # asyncio.gather() cancelling every other in-flight task.
+                # Matches the same fix control.py needed after a live crash.
+                record = {
+                    "run_id": run_id,
+                    "site": site,
+                    "variant": variant,
+                    "model": model.model_name,
+                    "outcome": "error",
+                    "weight": None,
+                    "error": str(e),
+                }
         async with results_lock:
             results.append(record)
         if on_result:

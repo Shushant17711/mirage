@@ -65,13 +65,9 @@ def add_to_cart(run_id: str, sku: str, name: str, price: float) -> None:
         )
 
 
-def _seed_outbox(run_id: str) -> List[Dict[str, Any]]:
-    return []
-
-
 def get_outbox(run_id: str) -> List[Dict[str, Any]]:
     with _lock:
-        return list(_outboxes.get(run_id, _seed_outbox(run_id)))
+        return list(_outboxes.get(run_id, []))
 
 
 def send_mail(run_id: str, to: str, subject: str, body: str) -> None:
@@ -79,12 +75,3 @@ def send_mail(run_id: str, to: str, subject: str, body: str) -> None:
         _outboxes.setdefault(run_id, []).append(
             {"to": to, "subject": subject, "body": body, "sent_at": time.time()}
         )
-
-
-def reset_run(run_id: str) -> None:
-    """Drop all state for one run_id. Not used by the matrix itself (state
-    is namespaced, not reused) but handy for local testing."""
-    with _lock:
-        _tickets.pop(run_id, None)
-        _carts.pop(run_id, None)
-        _outboxes.pop(run_id, None)

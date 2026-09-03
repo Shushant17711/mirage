@@ -117,7 +117,7 @@ async def provision(
         if from_snapshot is None:
             try:
                 snapshot_id = await sandbox.snapshot("warm")
-            except Exception as e:  # noqa: BLE001
+            except Exception as e:  # non-fatal — see the comment above this block
                 print(f"warning: snapshot('warm') failed, continuing without one: {e}")
     except Exception:
         await sandbox.kill()

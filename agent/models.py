@@ -80,8 +80,9 @@ class Model:
         # A bulk matrix run hits real, transient provider outages (seen live:
         # a 502 from the LLM gateway with `retryable: true`). Retry with
         # backoff on top of the client's own retries rather than letting one
-        # bad request kill a whole matrix pass.
-        last_err: Optional[Exception] = None
+        # bad request kill a whole matrix pass. Every exit from this loop is
+        # either `break` (success) or `raise` (final attempt, or a
+        # non-retryable status) — it never runs to exhaustion.
         for attempt in range(4):
             try:
                 resp = await self._client.chat.completions.create(
@@ -92,12 +93,9 @@ class Model:
                 )
                 break
             except APIStatusError as e:
-                last_err = e
                 if e.status_code < 500 or attempt == 3:
                     raise
                 await asyncio.sleep(2 * (2 ** attempt))
-        else:
-            raise last_err  # type: ignore[misc]
         choice = resp.choices[0].message
         usage = resp.usage
 
