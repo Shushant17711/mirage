@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Mirage — Replay Player</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/rrweb-player@1.0.0-alpha.4/dist/style.css">
+<style>
+  body { font-family: -apple-system, Helvetica, Arial, sans-serif; max-width: 900px; margin: 30px auto; padding: 0 16px; color: #1a1a1a; }
+  h1 { font-size: 1.3em; }
+  .controls { border: 1px solid #ddd; border-radius: 6px; padding: 14px; margin-bottom: 16px; background: #fafafa; }
+  .controls label { display: block; margin-bottom: 8px; font-size: 0.9em; color: #444; }
+  input[type=file] { display: block; margin-top: 4px; }
+  #status { font-size: 0.9em; color: #666; margin-top: 8px; }
+  #status.err { color: #b00; }
+  #player-container { min-height: 400px; }
+  code { background: #f0f0f0; padding: 1px 5px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<h1>Mirage — rrweb Replay Player</h1>
+<div class="controls">
+  <label>
+    This replay came from a rrweb NDJSON file under <code>results/replays/</code>.
+    If it didn't load automatically below (normal when opening this file directly
+    from disk — browsers block same-origin file:// fetches), pick it manually:
+  </label>
+  <input type="file" id="filepicker" accept=".ndjson,.json">
+  <div id="status">Looking for <code id="wanted-file">a replay</code>…</div>
+</div>
+<div id="player-container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/rrweb-player@1.0.0-alpha.4/dist/index.js"></script>
+<script>
+  const params = new URLSearchParams(location.search);
+  const wanted = params.get("replay") || "";
+  document.getElementById("wanted-file").textContent = wanted || "(no ?replay= given — pick a file below)";
+
+  function parseNdjson(text) {
+    return text
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean)
+      .map((l) => JSON.parse(l));
+  }
+
+  function play(events, label) {
+    document.getElementById("status").textContent = `Playing ${label} (${events.length} events).`;
+    document.getElementById("status").className = "";
+    document.getElementById("player-container").innerHTML = "";
+    new rrwebPlayer({
+      target: document.getElementById("player-container"),
+      props: { events, width: 860, height: 500, autoPlay: false },
+    });
+  }
+
+  function fail(msg) {
+    const el = document.getElementById("status");
+    el.textContent = msg;
+    el.className = "err";
+  }
+
+  if (wanted) {
+    fetch(wanted)
+      .then((r) => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.text();
+      })
+      .then((text) => play(parseNdjson(text), wanted))
+      .catch((e) => fail(`Couldn't fetch ${wanted} (${e.message}) — use the file picker above and select it from results/replays/.`));
+  } else {
+    fail("No ?replay= in the URL — use the file picker above.");
+  }
+
+  document.getElementById("filepicker").addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    file.text().then((text) => play(parseNdjson(text), file.name));
+  });
+</script>
+</body>
+</html>
